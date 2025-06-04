@@ -16,7 +16,7 @@
         <img id="processed_img", width="640", height="480">
     </div>
     <script>
-        const socket = io(window.location.origin);
+        const socket = io('https://face-detection-ramwrites.onrender.com');
 
         socket.on('connect', function() {
             console.log('connected')
