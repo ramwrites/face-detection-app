@@ -3,11 +3,12 @@ from flask_socketio import SocketIO, emit
 import numpy as np
 import cv2
 import tensorflow as tf
+import eventlet
 
 facetrack = tf.keras.models.load_model('model/facetracker.h5')
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='eventlet')
 
 @app.route('/')
 def index():
@@ -54,5 +55,5 @@ def handle_message(frame):
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=10000, debug=True, allow_unsafe_werkzeug=True)
+    eventlet.wsgi.server(eventlet.listen(("0.0.0.0", 10000)), app)
 
