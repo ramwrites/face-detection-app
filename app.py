@@ -21,7 +21,7 @@ def handle_connect():
 def handle_disconnect():
     print('Client disconnected')
 
-@socketio.on('message')
+@socketio.on('image')
 def handle_message(frame):
     image = np.frombuffer(frame, dtype= np.uint8)
     img = cv2.imdecode(image, cv2.IMREAD_COLOR)
@@ -52,6 +52,7 @@ def handle_message(frame):
     _, buffer = cv2.imencode('.jpg', img)
     socketio.emit('response', buffer.tobytes())
 
+
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=10000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
 
