@@ -28,7 +28,7 @@
             video.srcObject = stream;
             video.play();
 
-            setInterval(() => sendframe(video), 100);
+            setInterval(() => sendframe(video), 1000);
         })
         .catch(error => console.error("Error accessing webcam:", error));
 
