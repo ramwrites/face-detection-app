@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Face Detection</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <title>WebSocket Example</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 </head>
 <body>
     <h1>Face Detection</h1>
@@ -13,14 +13,14 @@
         <video id="webcam", width="640", height="480", style="display: none;"></video>
     </div>
     <div>
-        <img id="processed_img", width="640", height="480", style="display: flexbox;">
+        <img id="processed_img", width="640", height="480">
     </div>
     <script>
+        const socket = io();
 
-        var socket = io.connect(window.location.protocol + "//" + document.domain + ":" + location.port);
-        socket.on("connect", function () {
-        console.log("Connected...!", socket.connected);
-        });
+        socket.on('connect', function() {
+            console.log('connected')
+        })
 
         navigator.mediaDevices.getUserMedia({video: true})
         .then(stream => {
@@ -40,7 +40,7 @@
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
             canvas.toBlob(blob => {
-                socket.emit('image',blob);
+                socket.send(blob);
             }, 'image/jpeg', 0.7)
         }
 

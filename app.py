@@ -3,12 +3,11 @@ from flask_socketio import SocketIO, emit
 import numpy as np
 import cv2
 import tensorflow as tf
-import eventlet
 
 facetrack = tf.keras.models.load_model('model/facetracker.h5')
 
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode='eventlet')
+socketio = SocketIO(app)
 
 @app.route('/')
 def index():
@@ -22,7 +21,7 @@ def handle_connect():
 def handle_disconnect():
     print('Client disconnected')
 
-@socketio.on('image')
+@socketio.on('message')
 def handle_message(frame):
     image = np.frombuffer(frame, dtype= np.uint8)
     img = cv2.imdecode(image, cv2.IMREAD_COLOR)
@@ -53,7 +52,12 @@ def handle_message(frame):
     _, buffer = cv2.imencode('.jpg', img)
     socketio.emit('response', buffer.tobytes())
 
-
 if __name__ == '__main__':
-    eventlet.wsgi.server(eventlet.listen(("0.0.0.0", 10000)), app)
+    import os
+    import eventlet
+    import eventlet.wsgi
+    eventlet.monkey_patch()
+    
+    port = int(os.environ.get("PORT", 10000))
+    socketio.run(app, host='0.0.0.0', port=port)
 
